@@ -42,7 +42,15 @@ time_complexity = zeros(11,1);
 for image_number = 1:length(test_images)
     
     image_name = test_images(image_number).name;
-    input_im_nn = im2double(imread(fullfile(test_images_dir,image_name))); %Input for the ReconNet
+    
+    %input_im_nn = im2double(imread(fullfile(test_images_dir,image_name))); %Input for the ReconNet
+    tmp = imread(fullfile(test_images_dir, image_name));
+    %three-dimensionnal or two-dimensional
+    if size(tmp, 3) == 1
+        input_im_nn = im2double(tmp);
+    else input_im_nn = im2double(rgb2gray(tmp));
+    end;
+    
     block_size = 33;
     num_blocks = ceil(size(input_im_nn,1)/block_size)*ceil(size(input_im_nn,2)/block_size);
     
