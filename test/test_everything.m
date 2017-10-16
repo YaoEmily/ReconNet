@@ -35,11 +35,14 @@ caffemodel = ['./caffemodels/reconnet_0_', mr_str, '.caffemodel'];
 % Load the measurement matrix for the selected MR
 load(['../phi/phi_0_', mr_str, '_1089.mat']);
 
-psnr = zeros(11,1);
-time_complexity = zeros(11,1);
+len = length(test_images);
+
+psnr = zeros(len, 1);
+ssim_arr = zeros(len, 1);
+time_complexity = zeros(len, 1);
 
 %%
-for image_number = 1:length(test_images)
+for image_number = 1:len
     
     image_name = test_images(image_number).name;
     
@@ -107,9 +110,14 @@ for image_number = 1:length(test_images)
     rmse = sqrt(mean(diff(:).^2));
     psnr(image_number) = 20*log10(1/rmse);
     
+    ssim_arr(image_number) = ssim(input_im_nn, double(rec_im));
+    
     clear im_comp temp input_deep
     
     fprintf('\n %15s: PSNR = %f dB, Time = %f  seconds\n', image_name, psnr(image_number), time_complexity(image_number))    
 end
+
+fprintf(['the average psnr is  ', num2str(mean(psnr)),  '\n']);
+fprintf(['the average ssim is  ', num2str(mean(ssim_arr)),  '\n']);
 
 fprintf(['\n All reconstruction results are saved in ', output_dir, '\n'])
